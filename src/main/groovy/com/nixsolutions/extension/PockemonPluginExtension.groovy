@@ -1,5 +1,5 @@
 package com.nixsolutions.extension
 
 class PockemonPluginExtension {
-    String target
+    String target // PiKachu
 }

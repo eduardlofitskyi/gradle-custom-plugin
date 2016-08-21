@@ -3,6 +3,7 @@ version '0.1'
 
 apply plugin: 'groovy'
 apply plugin: 'java'
+apply plugin: PokemonCatcherPlugin
 
 sourceCompatibility = 1.8
 
@@ -16,4 +17,54 @@ dependencies {
     compile gradleApi()
 
     testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+//class PokemonCatcherTask extends DefaultTask {
+//
+//    @Input String pokeName
+//
+//    PokemonCatcherTask() {
+//        group = "customPlugin"
+//        description = "Lalalalala"
+//    }
+//
+//    @TaskAction
+//    void goCatching() {
+//        project.sourceSets.main.allSource.each { File file ->
+//            file.each { line ->
+//                if (line.toLowerCase().contains(pokeName)) {
+//                    project.logger.error("Dangerous! Pokemons strike")
+//                    throw new GradleException("Project failed on pokemon powerful")
+//                }
+//            }
+//        }
+//    }
+//}
+
+poke {
+    pokeName = "pikachu"
+}
+
+class PokemonCatcherPlugin implements Plugin<Project> {
+
+    @Override
+    void apply(Project project) {
+        project.extensions.create("poke", PokemonPluginExtension)
+
+        project.task("catchPokemon") << {
+            project.sourceSets.main.allSource.each { File file ->
+                file.each { line ->
+                    if (line.toLowerCase().contains(project.poke.pokeName)) {
+                        project.logger.error("Dangerous! Pokemons strike")
+                        throw new GradleException("Project failed on pokemon powerful")
+                    }
+                }
+            }
+        }
+    }
+}
+
+class PokemonPluginExtension {
+    String pokeName
+    boolean godMode = false
 }
